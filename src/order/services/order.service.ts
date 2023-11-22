@@ -1,18 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
-
-import { Order } from '../models';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { Order } from 'src/database/entities';
 
 @Injectable()
 export class OrderService {
-  private orders: Record<string, Order> = {}
+  constructor(
+    @InjectRepository(Order)
+    private readonly orders: Repository<Order>,
+  ) {}
 
   findById(orderId: string): Order {
     return this.orders[ orderId ];
   }
 
   create(data: any) {
-    const id = v4(v4())
+    const id = uuidv4();
     const order = {
       ...data,
       id,
